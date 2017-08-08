@@ -1,0 +1,15 @@
+version: '3'
+services:
+
+  build-service:
+    working_dir: /var/wmc_loyalty
+    build:
+      context: .
+      dockerfile: dockerfile-build
+    volumes:
+      - ./wmcloyalty_backend:/var/wmc_loyalty
+      - ./gradle-cache:/root/.gradle
+      - ./build:/var/build
+    command: ./build-docker.sh
+    container_name: wmc-build-service
+

@@ -1,0 +1,31 @@
+version: '3'
+services:
+  queue:
+    image: rabbitmq:3-management
+    container_name: wmc-queue
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
+      RABBITMQ_DEFAULT_USER: "rabbitmq"
+      RABBITMQ_DEFAULT_PASS: "rabbitmq"
+      RABBITMQ_DEFAULT_VHOST: "/"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+  internal-app:
+    working_dir: /var/wmc_loyalty
+    image: library/java
+    volumes:
+      - ./build:/var/wmc_loyalty
+      - ./wmcloyalty_backend/wmc-internal-app/run.sh:/var/wmc-internal-app.sh
+    environment:
+      spring.datasource.url: "jdbc:postgresql://${DOCKER_DB_MASTER},${DOCKER_DB_SLAVE}:5432/wmc_loyalty"
+      spring.datasource.password: "postgres"
+      queues.pos.host: ${DOCKER_QUEUE_POS_HOST}
+      queues.posjob.host: ${DOCKER_QUEUE_POS_JOB_HOST}
+    command: /var/wmc-internal-app.sh
+    container_name: wmc-internal-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - queue
+
