@@ -1,4 +1,4 @@
 #!/bin/bash
 
-docker-compose -f docker-compose-build-service.yml up
+docker-compose -f docker-compose-build-service.yml $@
 

@@ -1,7 +1,7 @@
 FROM library/java
 
-# RUN apt-get update
-# RUN apt-get install -y build-essential iputils-ping net-tools vim mc
+RUN apt-get update
+RUN apt-get install -y build-essential
 
 ENV GRADLE_VERSION 2.14
 
@@ -15,3 +15,5 @@ RUN cd /usr/lib \
 ENV GRADLE_HOME /usr/lib/gradle
 ENV PATH $PATH:$GRADLE_HOME/bin
 
+RUN curl -sL https://deb.nodesource.com/setup_6.x | bash -
+RUN apt-get install -y nodejs
