@@ -1,0 +1,6 @@
+FROM library/java
+
+RUN mkdir /var/log/wmc-api
+ADD ./build /var/wmc_loyalty
+ADD ./wmcloyalty_backend/wmc-api/run.sh /var/wmc-api.sh
+ADD ./wait /wait
