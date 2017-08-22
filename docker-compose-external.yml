@@ -2,6 +2,7 @@ version: '3'
 
 services:
   pgmaster:
+    image: 127.0.0.1:5000/pgmaster
     build:
       context: postgres-docker-cluster/
       dockerfile: Postgres-latest.Dockerfile
@@ -29,6 +30,7 @@ services:
       - 5452:5432
 
   pgslave1:
+    image: 127.0.0.1:5000/pgslave1
     build:
       context: postgres-docker-cluster/
       dockerfile: Postgres-latest.Dockerfile
@@ -44,6 +46,7 @@ services:
 
   # Add more slaves if required
   pgslave2:
+    image: 127.0.0.1:5000/pgslave2
     build:
       context: postgres-docker-cluster/
       dockerfile: Postgres-latest.Dockerfile
@@ -57,6 +60,7 @@ services:
       - 5442:5432
 
   pgslave3:
+    image: 127.0.0.1:5000/pgslave3
     build:
       context: postgres-docker-cluster/
       dockerfile: Postgres-latest.Dockerfile
@@ -71,6 +75,7 @@ services:
     ports:
       - 5443:5432
   pgslave4:
+    image: 127.0.0.1:5000/pgslave4
     build:
       context: postgres-docker-cluster/
       dockerfile: Postgres-latest.Dockerfile
@@ -84,6 +89,7 @@ services:
       - 5444:5432
 
   pgpool:
+    image: 127.0.0.1:5000/pgpool
     build:
       context: postgres-docker-cluster/
       dockerfile: Pgpool-latest.Dockerfile
@@ -132,17 +138,22 @@ services:
 
   app:
     working_dir: /var/wmc_loyalty
-    image: library/java
-    volumes:
-      - ./build:/var/wmc_loyalty
-      - ./wmcloyalty_backend/wmc-app/run.sh:/var/wmc-app.sh
-      - ./log:/var/log/wmc-app
-      - ./wait:/wait
+    # image: library/java
+    # volumes:
+    #   - ./build:/var/wmc_loyalty
+    #   - ./wmcloyalty_backend/wmc-app/run.sh:/var/wmc-app.sh
+    #   - ./log:/var/log/wmc-app
+    #   - ./wait:/wait
+    image: 127.0.0.1:5000/app
+    build:
+      context: .
+      dockerfile: dockerfile-app
     command: ['/wait/wait-for-it.sh', 'pgpool:5432', '-t', '600', '--', '/var/wmc-app.sh']
     ports:
-      - "80"
+      - "8080:80"
     environment:
       spring.datasource.url: "jdbc:postgresql://pgpool:5432/wmc_loyalty"
+      #spring.datasource.url: "jdbc:postgresql://pgmaster:5432/wmc_loyalty"
       spring.datasource.username: "postgres"
       spring.datasource.password: "dino.dev"
       spring.batch.initializer.enabled: "false"
@@ -155,64 +166,36 @@ services:
       spring.mvc.locale: en
       SERVICE_NAME: app
       SERVICE_TAGS: production
+    deploy:
+      mode: replicated
+      replicas: 1
+      # placement:
+        # https://docs.docker.com/engine/reference/commandline/service_create/#specify-service-constraints-constraint
+        # constraints:
+        #   - node.hostname != APPTEAM-Ubuntu
     depends_on:
       - pgpool
       - pgmaster
       - queue
       - session
-#   proxy:
-#     image: nginx
-#     ports:
-#       - "80:80"
-#     volumes:
-#       - "./nginx/nginx.conf:/etc/nginx/nginx.conf"
-#     links:
-#       - app
-  lb:
+
+  api:
+    working_dir: /var/wmc_loyalty
+    image: 127.0.0.1:5000/api
     build:
-      context: docker-nginx-lb/
-    image: consul-template-nginx
-    depends_on:
-      - app
+      context: .
+      dockerfile: dockerfile-api
+    command: ['/wait/wait-for-it.sh', 'pgpool:5432', '-t', '600', '--', '/var/wmc-api.sh']
     ports:
-      - "80:80"
-  consul:
-    image: gliderlabs/consul-server:latest
-    command: -bootstrap
-    ports:
-      - "8300:8300"
-      - "8400:8400"
-      - "8500:8500"
-      - "8600:53/udp"
-  registrator:
-    image: gliderlabs/registrator:master
+      - "8081:80"
+    environment:
+      #ref: https://jdbc.postgresql.org/documentation/head/connect.html
+      spring.datasource.url: "jdbc:postgresql://pgpool:5432/wmc_loyalty"
+      spring.datasource.username: "postgres"
+      spring.datasource.password: "dino.dev"
+      spring.batch.initializer.enabled: "false"
+      server.port: 80
     depends_on:
-      - consul
-    command: -internal -resync 600 consul://consul:8500
-    volumes:
-      - "/var/run/docker.sock:/tmp/docker.sock"
-
-
-  # api:
-  #   working_dir: /var/wmc_loyalty
-  #   image: library/java
-  #   volumes:
-  #     - ./build:/var/wmc_loyalty
-  #     - ./wmcloyalty_backend/wmc-api/run.sh:/var/wmc-api.sh
-  #     - ./log:/var/log/wmc-api
-  #     - ./wait:/wait
-  #   command: ['/wait/wait-for-it.sh', 'pgpool:5432', '-t', '600', '--', '/var/wmc-api.sh']
-  #   ports:
-  #     - "8082:80"
-  #   environment:
-  #     # ref: https://jdbc.postgresql.org/documentation/head/connect.html
-  #     spring.datasource.url: "jdbc:postgresql://pgpool:5432/wmc_loyalty"
-  #     spring.datasource.username: "postgres"
-  #     spring.datasource.password: "dino.dev"
-  #     spring.batch.initializer.enabled: "false"
-  #     server.port: 80
-  #     queues.posjob.host: queue
-  #   depends_on:
-  #     - pgpool
-  #     - pgmaster
-  #     - queue
+      - pgpool
+      - pgmaster
+      - queue
