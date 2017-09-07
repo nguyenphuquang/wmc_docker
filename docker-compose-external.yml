@@ -87,6 +87,26 @@ services:
       CLUSTER_NODE_NETWORK_NAME: pgslave4 # (default: hostname of the node)
     ports:
       - 5444:5432
+  backup:
+    image: 127.0.0.1:5000/backup
+    build:
+      context: PostDock/
+      dockerfile: Barman-latest.Dockerfile
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == APPTEAM-Ubuntu03
+    volumes:
+      - /backup:/var/backups 
+    environment:
+      REPLICATION_USER: replication_user # default is replication_user
+      REPLICATION_PASSWORD: replication_pass # default is replication_pass
+      REPLICATION_HOST: pgmaster
+      POSTGRES_PASSWORD: "dino.dev"
+      POSTGRES_USER: postgres
+      POSTGRES_DB: wmc_loyalty
+      SSH_ENABLE: 1
+      BACKUP_SCHEDULE: "1 */2 * * *"
 
   pgpool:
     image: 127.0.0.1:5000/pgpool
@@ -128,8 +148,8 @@ services:
       RABBITMQ_DEFAULT_PASS: "rabbitmq"
       RABBITMQ_DEFAULT_VHOST: "/"
     ports:
-      - "${DOCKER_QUEUE_EXTERNAL_MANAGER_PORT}:15672"
-      - "${DOCKER_QUEUE_EXTERNAL_PORT}:5672"
+      - "15672:15672"
+      - "5672:5672"
 
   session:
     image: redis:alpine
@@ -139,11 +159,18 @@ services:
   app:
     working_dir: /var/wmc_loyalty
     # image: library/java
-    # volumes:
+    volumes:
+      - /home/dinosys/build:/var/wmc_loyalty
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     #   - ./build:/var/wmc_loyalty
     #   - ./wmcloyalty_backend/wmc-app/run.sh:/var/wmc-app.sh
     #   - ./log:/var/log/wmc-app
     #   - ./wait:/wait
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == APPTEAM-Ubuntu02
     image: 127.0.0.1:5000/app
     build:
       context: .
@@ -153,7 +180,7 @@ services:
       - "8080:80"
     environment:
       spring.datasource.url: "jdbc:postgresql://pgpool:5432/wmc_loyalty"
-      #spring.datasource.url: "jdbc:postgresql://pgmaster:5432/wmc_loyalty"
+      # spring.datasource.url: "jdbc:postgresql://pgmaster:5432/wmc_loyalty"
       spring.datasource.username: "postgres"
       spring.datasource.password: "dino.dev"
       spring.batch.initializer.enabled: "false"
@@ -162,10 +189,19 @@ services:
       spring.redis.host: "session"
       spring.redis.port: 6379
       spring.redis.password: ""
-      spring.session.store-type: redis
+      # spring.session.store-type: redis
       spring.mvc.locale: en
       SERVICE_NAME: app
       SERVICE_TAGS: production
+      #spring.datasource.hikari.maximum-pool-size: 40
+      spring.datasource.hikari.maximum-pool-size: 10
+      spring.datasource.hikari.minimum-idle: 1
+      # spring.datasource.hikari.leak-detection-threshold: 5000
+      spring.datasource.hikari.idle-timeout: 30000
+      spring.datasource.hikari.connection-timeout: 60000
+      spring.datasource.hikari.validation-timeout: 3000
+      spring.datasource.hikari.max-lifetime: 600000
+      wmc.pos.endpoint: http://192.168.1.235/wmcvip/MemberService.svc
     deploy:
       mode: replicated
       replicas: 1
@@ -188,13 +224,32 @@ services:
     command: ['/wait/wait-for-it.sh', 'pgpool:5432', '-t', '600', '--', '/var/wmc-api.sh']
     ports:
       - "8081:80"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
     environment:
       #ref: https://jdbc.postgresql.org/documentation/head/connect.html
       spring.datasource.url: "jdbc:postgresql://pgpool:5432/wmc_loyalty"
+      # spring.datasource.url: "jdbc:postgresql://pgmaster:5432/wmc_loyalty"
       spring.datasource.username: "postgres"
       spring.datasource.password: "dino.dev"
       spring.batch.initializer.enabled: "false"
       server.port: 80
+      spring.datasource.hikari.maximum-pool-size: 4
+      # spring.datasource.hikari.leak-detection-threshold: 5000
+      spring.datasource.hikari.idle-timeout: 600000
+      spring.datasource.hikari.connection-timeout: 600000
+      spring.datasource.hikari.validation-timeout: 3000
+      spring.datasource.hikari.max-lifetime: 600000
+      spring.datasource.test-while-idle: "true"
+      spring.datasource.test-on-borrow: "true"
+      spring.datasource.testOnBorrow: "true"
+      spring.datasource.time-between-eviction-runs-millis: 25000
+      spring.datasource.timeBetweenEvictionRunsMillis: 25000
+      spring.datasource.validation-query: "SELECT 1"
+      spring.datasource.validationQuery: "SELECT 1"
+    deploy:
+      mode: replicated
+      replicas: 1
     depends_on:
       - pgpool
       - pgmaster

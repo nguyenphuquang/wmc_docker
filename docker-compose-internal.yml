@@ -9,23 +9,25 @@ services:
       RABBITMQ_DEFAULT_PASS: "rabbitmq"
       RABBITMQ_DEFAULT_VHOST: "/"
     ports:
-      - "15672:15672"
-      - "5672:5672"
+      - "15682:15672"
+        # - "5672:5672"
   internal-app:
     working_dir: /var/wmc_loyalty
     image: library/java
     volumes:
       - ./build:/var/wmc_loyalty
+      - /etc/timezone:/etc/timezone:ro
       - ./wmcloyalty_backend/wmc-internal-app/run.sh:/var/wmc-internal-app.sh
     environment:
-      spring.datasource.url: "jdbc:postgresql://${DOCKER_DB_MASTER},${DOCKER_DB_SLAVE}:5432/wmc_loyalty"
-      spring.datasource.password: "postgres"
+      spring.datasource.url: "jdbc:postgresql://${DOCKER_DB_MASTER}:${DOCKER_DB_MASTER_PORT}/wmc_loyalty"
+      spring.datasource.password: "dino.dev"
       queues.pos.host: ${DOCKER_QUEUE_POS_HOST}
       queues.posjob.host: ${DOCKER_QUEUE_POS_JOB_HOST}
+      wmc.pos.endpoint: http://192.168.1.235/wmcvip/MemberService.svc
     command: /var/wmc-internal-app.sh
     container_name: wmc-internal-app
     ports:
-      - "8080:8080"
+      - "8082:8081"
     depends_on:
       - queue
 

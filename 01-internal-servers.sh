@@ -1,7 +1,8 @@
 #!/bin/bash
 
-DOCKER_DB_MASTER=pg-master \
-DOCKER_DB_SLAVE=pg-slave \
+DOCKER_DB_MASTER=192.168.1.31 \
+DOCKER_DB_MASTER_PORT=5430 \
 DOCKER_QUEUE_POS_HOST=queue \
-DOCKER_QUEUE_POS_JOB_HOST=queue \
-docker-compose -f docker-compose-internal.yml up $@
+DOCKER_QUEUE_POS_JOB_HOST=192.168.1.31 \
+DOCKER_QUEUE_POS_JOB_PORT=5672 \
+docker-compose -f docker-compose-internal.yml $@
