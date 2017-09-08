@@ -8,6 +8,9 @@ services:
       RABBITMQ_DEFAULT_USER: "rabbitmq"
       RABBITMQ_DEFAULT_PASS: "rabbitmq"
       RABBITMQ_DEFAULT_VHOST: "/"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     ports:
       - "15682:15672"
         # - "5672:5672"
@@ -16,6 +19,7 @@ services:
     image: library/java
     volumes:
       - ./build:/var/wmc_loyalty
+      - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       - ./wmcloyalty_backend/wmc-internal-app/run.sh:/var/wmc-internal-app.sh
     environment:
