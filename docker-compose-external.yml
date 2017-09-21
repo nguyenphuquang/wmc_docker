@@ -7,6 +7,10 @@ services:
       context: PostDock/
       dockerfile: Postgres-latest.Dockerfile
     # image: paunin/postgresql-cluster-pgsql
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == APPTEAM-Ubuntu03
     environment:
       PARTNER_NODES: "pgmaster,pgslave1,pgslave3"
       CLUSTER_NAME: pg_cluster
@@ -30,6 +34,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
+      - /pgmaster:/var/lib/postgresql/data
     ports:
       - 5452:5432
 
@@ -46,6 +51,8 @@ services:
       NODE_NAME: node2
       CLUSTER_NODE_NETWORK_NAME: pgslave1 # (default: hostname of the node)
       SSH_ENABLE: 1
+      CLEAN_OVER_REWIND: 1
+      CONFIGS: "max_replication_slots:10" #some overrides
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
@@ -85,6 +92,7 @@ services:
       CLUSTER_NODE_NETWORK_NAME: pgslave3 # (default: hostname of the node)
       NODE_PRIORITY: 200  # (default: 100)
       SSH_ENABLE: 1
+      CLEAN_OVER_REWIND: 1
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
@@ -129,6 +137,7 @@ services:
       POSTGRES_DB: wmc_loyalty
       SSH_ENABLE: 1
       BACKUP_SCHEDULE: "1 */2 * * *"
+      BACKUP_RETENTION_DAYS: "2"
 
   pgpool:
     image: 127.0.0.1:5000/pgpool
@@ -175,6 +184,9 @@ services:
 
   session:
     image: redis:alpine
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     ports:
       - "6379:6379"
 
@@ -187,12 +199,12 @@ services:
       - /etc/timezone:/etc/timezone:ro
     #   - ./build:/var/wmc_loyalty
     #   - ./wmcloyalty_backend/wmc-app/run.sh:/var/wmc-app.sh
-    #   - ./log:/var/log/wmc-app
+      - /wmc-app-log:/var/log/wmc-app
     #   - ./wait:/wait
     deploy:
       placement:
         constraints:
-          - node.hostname == APPTEAM-Ubuntu02
+          - node.hostname == APPTEAM-Ubuntu03
     image: 127.0.0.1:5000/app
     build:
       context: .
@@ -224,6 +236,10 @@ services:
       spring.datasource.hikari.validation-timeout: 3000
       spring.datasource.hikari.max-lifetime: 600000
       wmc.pos.endpoint: http://192.168.1.235/wmcvip/MemberService.svc
+      # cron.report.process.expression: "1 0 0 * * *"
+      # cron.daily: "1 55 9 * * *"
+      cron.report.process.expression: "1 1 0 * * *"
+      cron.daily: "1 0 0 * * *"
     deploy:
       mode: replicated
       replicas: 1
