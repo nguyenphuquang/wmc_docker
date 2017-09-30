@@ -211,7 +211,7 @@ services:
       dockerfile: dockerfile-app
     command: ['/wait/wait-for-it.sh', 'pgpool:5432', '-t', '600', '--', '/var/wmc-app.sh']
     ports:
-      - "8080:80"
+      - "8089:80"
     environment:
       spring.datasource.url: "jdbc:postgresql://pgpool:5432/wmc_loyalty"
       # spring.datasource.url: "jdbc:postgresql://pgmaster:5432/wmc_loyalty"
