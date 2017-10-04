@@ -68,7 +68,7 @@ services:
     expose:
       - 6379
     logging:
-      driver: syslog
+      driver: gelf
       options:
         tag: "{{.Name}}"
         syslog-address: "udp://${log_ip}:514"
