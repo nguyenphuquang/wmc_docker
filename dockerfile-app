@@ -2,5 +2,5 @@ FROM library/java
 
 RUN mkdir /var/log/wmc-app
 ADD ./build /var/wmc_loyalty
-ADD ./wmcloyalty_backend/wmc-app/run.sh /var/wmc-app.sh
+ADD ./build/wmc-app.sh /var/wmc-app.sh
 ADD ./wait /wait
