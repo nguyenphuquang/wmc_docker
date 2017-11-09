@@ -116,7 +116,12 @@ services:
       spring.mail.port: 587
       spring.mail.username: andrino.dev@gmail.com
       spring.mail.password: dino.dev
-      mail.pattern: qadino2015
+      mail.pattern: a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z;1;2;3;4;5;6;7;8;9;0 
+
+      asset.versioning.mode: manual
+      asset.versioning.strategy: fixed
+      asset.fixed.version.type: string
+      asset.fixed.version.value: 20171005
     logging:
       driver: syslog
       options:
@@ -165,7 +170,7 @@ services:
       spring.mail.port: 587
       spring.mail.username: andrino.dev@gmail.com
       spring.mail.password: dino.dev
-      mail.pattern: qadino2015
+      mail.pattern: a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z;1;2;3;4;5;6;7;8;9;0
     logging:
       driver: syslog
       options:
@@ -216,7 +221,7 @@ services:
       spring.mail.port: 587
       spring.mail.username: andrino.dev@gmail.com
       spring.mail.password: dino.dev
-      mail.pattern: qadino2015
+      mail.pattern: a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z;1;2;3;4;5;6;7;8;9;0
     logging:
       driver: syslog
       options:
