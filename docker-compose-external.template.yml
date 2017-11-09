@@ -22,6 +22,7 @@ services:
             # in format variable1:value1[,variable2:value2[,...]]
             # used for pgpool.conf file
     network_mode: host
+    restart: on-failure
     expose:
       - 5432
       - 9898
@@ -48,6 +49,7 @@ services:
       RABBITMQ_DEFAULT_PASS: "rabbitmq"
       RABBITMQ_DEFAULT_VHOST: "/"
     network_mode: host
+    restart: on-failure
     expose:
       - 15672
       - 5672
@@ -65,10 +67,11 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     network_mode: host
+    restart: on-failure
     expose:
       - 6379
     logging:
-      driver: gelf
+      driver: syslog
       options:
         tag: "{{.Name}}"
         syslog-address: "udp://${log_ip}:514"
@@ -89,6 +92,7 @@ services:
     network_mode: host
     expose:
       - 8080
+    restart: on-failure
     environment:
       spring.datasource.url: "jdbc:postgresql://pgpool.host:5432/wmc_loyalty"
       spring.datasource.username: "postgres"
@@ -116,7 +120,7 @@ services:
       spring.mail.port: 587
       spring.mail.username: andrino.dev@gmail.com
       spring.mail.password: dino.dev
-      mail.pattern: qadino2015
+      mail.pattern: a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z;1;2;3;4;5;6;7;8;9;0
     logging:
       driver: syslog
       options:
@@ -142,6 +146,7 @@ services:
       - /home/dinosys/build:/var/wmc_loyalty
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
+    restart: on-failure
     environment:
       # ref: https://jdbc.postgresql.org/documentation/head/connect.html
       spring.datasource.url: "jdbc:postgresql://pgpool.host:5432/wmc_loyalty"
@@ -165,7 +170,7 @@ services:
       spring.mail.port: 587
       spring.mail.username: andrino.dev@gmail.com
       spring.mail.password: dino.dev
-      mail.pattern: qadino2015
+      mail.pattern: a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z;1;2;3;4;5;6;7;8;9;0
     logging:
       driver: syslog
       options:
@@ -185,6 +190,7 @@ services:
       dockerfile: dockerfile-job
     command: ['/wait/wait-for-it.sh', 'pgpool.host:5432', '-t', '600', '--', '/var/wmc-job.sh']
     network_mode: host
+    restart: on-failure
     expose:
       - 8084
     volumes:
@@ -216,7 +222,7 @@ services:
       spring.mail.port: 587
       spring.mail.username: andrino.dev@gmail.com
       spring.mail.password: dino.dev
-      mail.pattern: qadino2015
+      mail.pattern: a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z;1;2;3;4;5;6;7;8;9;0
     logging:
       driver: syslog
       options:
