@@ -116,10 +116,10 @@ services:
       wmc.pos.endpoint: http://192.168.1.235/wmcvip/MemberService.svc
       cron.report.process.expression: "1 1 0 * * *"
       cron.daily: "1 0 0 * * *"
-      spring.mail.host: smtp.gmail.com
-      spring.mail.port: 587
-      spring.mail.username: andrino.dev@gmail.com
-      spring.mail.password: dino.dev
+      spring.mail.host: retail.smtp.com
+      spring.mail.port: 25
+      spring.mail.username: wmcprestige
+      spring.mail.password: "!@#Ebhw!@#"
       mail.pattern: a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z;1;2;3;4;5;6;7;8;9;0 
 
       asset.versioning.mode: manual
@@ -171,10 +171,10 @@ services:
       spring.datasource.timeBetweenEvictionRunsMillis: 25000
       spring.datasource.validation-query: "SELECT 1"
       spring.datasource.validationQuery: "SELECT 1"
-      spring.mail.host: smtp.gmail.com
-      spring.mail.port: 587
-      spring.mail.username: andrino.dev@gmail.com
-      spring.mail.password: dino.dev
+      spring.mail.host: retail.smtp.com
+      spring.mail.port: 25
+      spring.mail.username: wmcprestige
+      spring.mail.password: "!@#Ebhw!@#"
       mail.pattern: a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z;1;2;3;4;5;6;7;8;9;0
     logging:
       driver: syslog
@@ -223,10 +223,10 @@ services:
       spring.datasource.validationQuery: "SELECT 1"
       cron.report.process.expression: "1 1 0 * * *"
       cron.daily: "1 0 0 * * *"
-      spring.mail.host: smtp.gmail.com
-      spring.mail.port: 587
-      spring.mail.username: andrino.dev@gmail.com
-      spring.mail.password: dino.dev
+      spring.mail.host: retail.smtp.com
+      spring.mail.port: 25
+      spring.mail.username: wmcprestige
+      spring.mail.password: "!@#Ebhw!@#"
       mail.pattern: a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z;1;2;3;4;5;6;7;8;9;0
     logging:
       driver: syslog
