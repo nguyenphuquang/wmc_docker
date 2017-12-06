@@ -32,11 +32,13 @@ services:
       - "pgslave2.host:${pgslave2_ip}"
       - "pgslave3.host:${pgslave3_ip}"
       - "pgslave4.host:${pgslave4_ip}"
+#if $log_ip
     logging:
       driver: syslog
       options:
         tag: "{{.Name}}"
         syslog-address: "udp://${log_ip}:514"
+#end if
 #end if
 
 #if $queue_ip == $ip
@@ -53,11 +55,13 @@ services:
     expose:
       - 15672
       - 5672
+#if $log_ip
     logging:
       driver: syslog
       options:
         tag: "{{.Name}}"
         syslog-address: "udp://${log_ip}:514"
+#end if
 #end if
 
 #if $session_ip == $ip
@@ -70,11 +74,13 @@ services:
     restart: on-failure
     expose:
       - 6379
+#if $log_ip
     logging:
       driver: syslog
       options:
         tag: "{{.Name}}"
         syslog-address: "udp://${log_ip}:514"
+#end if
 #end if
 
 #if $app_ip == $ip
@@ -126,11 +132,13 @@ services:
       asset.versioning.strategy: fixed
       asset.fixed.version.type: string
       asset.fixed.version.value: 20171005
+#if $log_ip
     logging:
       driver: syslog
       options:
         tag: "{{.Name}}"
         syslog-address: "udp://${log_ip}:514"
+#end if
     extra_hosts:
       - "pgpool.host:$pgpool_ip"
       - "queue.host:$queue_ip"
@@ -176,11 +184,13 @@ services:
       spring.mail.username: wmcprestige
       spring.mail.password: "!@#Ebhw!@#"
       mail.pattern: a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z;1;2;3;4;5;6;7;8;9;0
+#if $log_ip
     logging:
       driver: syslog
       options:
         tag: "{{.Name}}"
         syslog-address: "udp://${log_ip}:514"
+#end if
     extra_hosts:
       - "pgpool.host:$pgpool_ip"
       - "queue.host:$queue_ip"
@@ -228,11 +238,13 @@ services:
       spring.mail.username: wmcprestige
       spring.mail.password: "!@#Ebhw!@#"
       mail.pattern: a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z;1;2;3;4;5;6;7;8;9;0
+#if $log_ip
     logging:
       driver: syslog
       options:
         tag: "{{.Name}}"
         syslog-address: "udp://${log_ip}:514"
+#end if
     extra_hosts:
       - "pgpool.host:$pgpool_ip"
 #end if
