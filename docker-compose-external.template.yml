@@ -87,7 +87,7 @@ services:
   app:
     working_dir: /var/wmc_loyalty
     volumes:
-      - /home/dinosys/build:/var/wmc_loyalty
+      - ./build:/var/wmc_loyalty
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       - /wmc-app-log:/var/log/wmc-app
@@ -156,7 +156,7 @@ services:
     expose:
       - 8081
     volumes:
-      - /home/dinosys/build:/var/wmc_loyalty
+      - ./build:/var/wmc_loyalty
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     restart: on-failure
@@ -209,7 +209,7 @@ services:
     expose:
       - 8084
     volumes:
-      - /home/dinosys/build:/var/wmc_loyalty
+      - ./build:/var/wmc_loyalty
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     environment:
