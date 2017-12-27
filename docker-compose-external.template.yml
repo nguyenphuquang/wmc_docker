@@ -22,7 +22,7 @@ services:
             # in format variable1:value1[,variable2:value2[,...]]
             # used for pgpool.conf file
     network_mode: host
-    restart: on-failure
+    restart: always
     expose:
       - 5432
       - 9898
@@ -51,7 +51,7 @@ services:
       RABBITMQ_DEFAULT_PASS: "rabbitmq"
       RABBITMQ_DEFAULT_VHOST: "/"
     network_mode: host
-    restart: on-failure
+    restart: always
     expose:
       - 15672
       - 5672
@@ -71,7 +71,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     network_mode: host
-    restart: on-failure
+    restart: always
     expose:
       - 6379
 #if $log_ip
@@ -83,7 +83,7 @@ services:
 #end if
 #end if
 
-#if $app_ip == $ip
+#if $ip in $app_ip
   app:
     working_dir: /var/wmc_loyalty
     hostname: app.host
@@ -99,7 +99,7 @@ services:
     network_mode: host
     expose:
       - 8080
-    restart: on-failure
+    restart: always
     environment:
       spring.datasource.url: "jdbc:postgresql://pgpool.host:5432/wmc_loyalty"
       spring.datasource.username: "postgres"
@@ -147,7 +147,7 @@ services:
       - "app.host:$app_ip"
 #end if
 
-#if $api_ip == $ip
+#if $ip in $api_ip
   api:
     working_dir: /var/wmc_loyalty
     hostname: api.host
@@ -162,7 +162,7 @@ services:
       - ./build:/var/wmc_loyalty
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-    restart: on-failure
+    restart: always
     environment:
       # ref: https://jdbc.postgresql.org/documentation/head/connect.html
       spring.datasource.url: "jdbc:postgresql://pgpool.host:5432/wmc_loyalty"
@@ -200,7 +200,7 @@ services:
       - "api.host:$api_ip"
 #end if
 
-#if $job_ip == $ip
+#if $ip in $job_ip
   job:
     working_dir: /var/wmc_loyalty
     hostname: job.host
@@ -210,7 +210,7 @@ services:
       dockerfile: dockerfile-job
     command: ['/wait/wait-for-it.sh', 'pgpool.host:5432', '-t', '600', '--', '/var/wmc-job.sh']
     network_mode: host
-    restart: on-failure
+    restart: always
     expose:
       - 8084
     volumes:
