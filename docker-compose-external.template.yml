@@ -144,7 +144,7 @@ services:
       - "pgpool.host:$pgpool_ip"
       - "queue.host:$queue_ip"
       - "session.host:$session_ip"
-      - "app.host:$app_ip"
+      - "app.host:$ip"
 #end if
 
 #if $ip in $api_ip
@@ -197,7 +197,7 @@ services:
     extra_hosts:
       - "pgpool.host:$pgpool_ip"
       - "queue.host:$queue_ip"
-      - "api.host:$api_ip"
+      - "api.host:$ip"
 #end if
 
 #if $ip in $job_ip
@@ -252,5 +252,5 @@ services:
 #end if
     extra_hosts:
       - "pgpool.host:$pgpool_ip"
-      - "job.host:$job_ip"
+      - "job.host:$ip"
 #end if
