@@ -128,7 +128,7 @@ services: #if $pgpool_ip == $ip
       spring.mail.host: retail.smtp.com
       spring.mail.port: 25
       spring.mail.username: wmcprestige
-      spring.mail.password: "!@#Ebhw!@#"
+      spring.mail.password: ""
       mail.pattern: a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z;1;2;3;4;5;6;7;8;9;0 
 
       asset.versioning.mode: manual
@@ -187,7 +187,7 @@ services: #if $pgpool_ip == $ip
       spring.mail.host: retail.smtp.com
       spring.mail.port: 25
       spring.mail.username: wmcprestige
-      spring.mail.password: "!@#Ebhw!@#"
+      spring.mail.password: ""
       mail.pattern: a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z;1;2;3;4;5;6;7;8;9;0
 #if $log_ip
     logging:
@@ -243,7 +243,7 @@ services: #if $pgpool_ip == $ip
       spring.mail.host: retail.smtp.com
       spring.mail.port: 25
       spring.mail.username: wmcprestige
-      spring.mail.password: "!@#Ebhw!@#"
+      spring.mail.password: ""
       mail.pattern: a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z;1;2;3;4;5;6;7;8;9;0
 #if $log_ip
     logging:
